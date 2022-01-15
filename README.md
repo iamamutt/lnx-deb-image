@@ -12,7 +12,7 @@ Testing simultaneous docker hub and ghcr workflows.
 
 ## Docker compose 
 
-...
+`docker-compose up --detach`
 
 
 ## Manual Docker build
