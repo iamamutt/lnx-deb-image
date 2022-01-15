@@ -1,0 +1,11 @@
+#   docker-compose up --detach
+#   docker-compose down
+
+version: "2.4"
+services:
+  lnx-deb-img:
+    volumes:
+    - "./:/home/joseph/lnx-deb-image"
+    image: lnx-deb-image:v0.0.0a # ghcr.io/iamamutt/lnx-deb-image:latest
+    init: true
+    tty: true
