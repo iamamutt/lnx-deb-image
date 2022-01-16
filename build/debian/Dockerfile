@@ -25,14 +25,10 @@ RUN <<-EOF
 	mkdir -p /usr/share/man/man1
 	echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
 	apt-get update
-	apt-get -qq install -y apt-utils
-	apt-get -qq install -y locales wget sudo
+	apt-get -qq install -y apt-utils locales wget sudo ca-certificates curl gnupg lsb-release
 	localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
 	ln -snf /usr/share/zoneinfo/${TZ} /etc/localtime
 	echo ${TZ} > /etc/timezone
-	apt-get autoremove -y
-	apt-get clean -y
-	rm -rf /var/lib/apt/lists/*
 EOF
 ENV LANG=en_US.utf8
 ENV LC_ALL=en_US.utf8
@@ -47,6 +43,19 @@ RUN	<<-EOF
 		--create-home --groups users,sudo --shell /bin/bash ${USER_NAME}
 	passwd -qd ${USER_NAME}
 	echo '${USER_NAME} ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
+EOF
+
+# setup docker in docker
+RUN <<-EOF
+curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian \
+  $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
+apt-get update
+apt-get -qq install -y docker-ce docker-ce-cli containerd.io
+apt-get autoremove -y
+apt-get clean -y
+rm -rf /var/lib/apt/lists/*
 EOF
 
 # finalize -----------------------------------------------------------------------------
