@@ -1,0 +1,16 @@
+on:
+  push:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set Tag
+        run: echo ::set-output name=head_ref::${GITHUB_REF#refs/*/}
+      - name: Print Ref
+        env:
+          HEAD_REF: ${{ steps.vars.outputs.head_ref }}
+        run: |
+          echo $HEAD_REF
+          echo ${{ steps.vars.outputs.head_ref }}
