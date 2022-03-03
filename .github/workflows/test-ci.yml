@@ -7,10 +7,15 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Set Tag
-        run: echo ::set-output name=head_ref::${GITHUB_REF#refs}
-      - name: Print Ref
+        id: set-tag
+        run: |
+          echo ::set-output name=head_ref::${GITHUB_REF#refs}
+          git fetch --prune --unshallow
+          echo "::set-output name=last_tag::$(git describe --tags --abbrev=0)"
+      - name: Print Tag
         env:
-          HEAD_REF: ${{ steps.vars.outputs.head_ref }}
+          HEAD_REF: ${{ steps.set-tag.outputs.head_ref }}
         run: |
           echo $HEAD_REF
-          echo ${{ steps.vars.outputs.head_ref }}
+          echo ${{ steps.set-tag.outputs.head_ref }}
+          echo ${{ steps.set-tag.outputs.last_tag }}
