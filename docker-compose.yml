@@ -9,3 +9,4 @@ services:
     image: ghcr.io/iamamutt/lnx-deb-image:latest # lnx-deb-image:v0.0.0a
     init: true
     tty: true
+    user: root:root
